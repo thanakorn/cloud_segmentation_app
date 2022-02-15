@@ -1,0 +1,6 @@
+dvc
+dvc[gs]
+gcloud
+torch
+opencv-python
+numpy
