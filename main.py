@@ -28,10 +28,9 @@ def load_model():
         params = yaml.safe_load(io.BytesIO(f.read()))
         model_params = params['model']
 
-    # with dvc.api.open(path=model_path, repo=repo_url, mode='rb') as f:
-    #     buffer = io.BytesIO(f.read())
-    #     state_dict = torch.load(buffer)
-    state_dict = torch.load('/Users/thanakorn/git/cloud_segmentation/model/model.pth')
+    with dvc.api.open(path=model_path, repo=repo_url, mode='rb') as f:
+        buffer = io.BytesIO(f.read())
+        state_dict = torch.load(buffer)
     
     model = UNet(n_classes=model_params['n_classes'], in_channel=model_params['in_channels'])
     model.load_state_dict(state_dict)
@@ -53,14 +52,14 @@ def save_image(img_data, filename):
     blob.upload_from_filename(temp_local_filename)
     os.remove(temp_local_filename)
 
-def inference(event, context):
+def run_inference(event, context):
     model = load_model()
     for obj in input_bucket.list_blobs():
+        print('Load {}'.format(obj.name))
         img = load_image(obj.name)
+        print('Process {}'.format(obj.name))
         x = torch.tensor(img.transpose(2,0,1)).unsqueeze(dim=0).float()
         out = sigmoid(model(x))
         out = (out.detach().numpy() > 0.5).astype(np.uint16) * 255
+        print('Save {}'.format(obj.name))
         save_image(out, obj.name)
-
-if __name__=='__main__':
-    inference(None, None)
