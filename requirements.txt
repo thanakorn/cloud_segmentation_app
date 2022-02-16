@@ -1,6 +1,5 @@
-dvc==2.7.4
+google-cloud-storage
 dvc[gs]
-gcloud
 https://download.pytorch.org/whl/cpu/torch-1.7.1%2Bcpu-cp37-cp37m-linux_x86_64.whl
 opencv-python
 numpy

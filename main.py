@@ -54,12 +54,13 @@ def save_image(img_data, filename):
 
 def run_inference(event, context):
     model = load_model()
-    for obj in input_bucket.list_blobs():
-        print('Load {}'.format(obj.name))
-        img = load_image(obj.name)
-        print('Process {}'.format(obj.name))
-        x = torch.tensor(img.transpose(2,0,1)).unsqueeze(dim=0).float()
-        out = sigmoid(model(x))
-        out = (out.detach().numpy() > 0.5).astype(np.uint16) * 255
-        print('Save {}'.format(obj.name))
-        save_image(out, obj.name)
+    with torch.no_grad():
+        for obj in input_bucket.list_blobs():
+            print('Load {}'.format(obj.name))
+            img = load_image(obj.name)
+            print('Process {}'.format(obj.name))
+            x = torch.tensor(img.transpose(2,0,1)).unsqueeze(dim=0).float()
+            out = sigmoid(model(x))
+            out = (out.detach().numpy() > 0.5).astype(np.uint16) * 255
+            print('Save {}'.format(obj.name))
+            save_image(out, obj.name)
