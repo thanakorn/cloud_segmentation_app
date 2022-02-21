@@ -65,3 +65,4 @@ def run_inference(request):
             out = (out.detach().numpy() > 0.5).astype(np.uint16) * 255
             print('Save {}'.format(obj_name))
             save_image(out, obj_name)
+            blob.delete()

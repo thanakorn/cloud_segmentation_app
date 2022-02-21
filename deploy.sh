@@ -1,0 +1,3 @@
+#!/bin/sh
+gcloud functions deploy cloud-segmentation --runtime python37 --trigger-http --entry-point run_inference --set-env-vars "INPUT_BUCKET_NAME=cloud-segmentation-input,OUTPUT_BUCKET_NAME=cloud-segmentation-output" --memory 2048MB --no-allow-unauthenticated
+gcloud scheduler jobs update http cloud-segmentation-trigger --description "Trigger cloud segmentation pipeline" --schedule "*/5 * * * *" --time-zone "Asia/Bangkok" --uri "https://us-central1-impactful-study-340404.cloudfunctions.net/cloud-segmentation" --http-method POST --message-body '{}' --location us-central1 --oidc-service-account-email impactful-study-340404@appspot.gserviceaccount.com
