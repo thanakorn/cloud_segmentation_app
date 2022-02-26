@@ -10,12 +10,7 @@ jobs:
   deploy_function:
     runs-on: ubuntu-latest
     steps:
-      - name: "Authenticate GCP"
-        id: auth
-        uses: 'google-github-actions/auth@v0'
-        with:
-          credentials_json: ${{ secrets.gcp_credentials }}
-          create_credentials_file: false
+      - uses: actions/checkout@v2
 
       - name: "Deploy a Cloud Function"
         id: deploy-function
@@ -23,7 +18,8 @@ jobs:
         with:
           name: cloud-segmentation
           runtime: python37
+          project_id: ${{ secrets.gcp_project_id }}
+          credentials_json: ${{ secrets.gcp_credentials }}
           entry_point: run_inference
-          project_id: ${{ secrets.gcp_project }}
           env_vars: INPUT_BUCKET_NAME=cloud-segmentation-input,OUTPUT_BUCKET_NAME=cloud-segmentation-output
           memory_mb: 2048MB
