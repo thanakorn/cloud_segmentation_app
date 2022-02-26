@@ -19,7 +19,7 @@ jobs:
           name: cloud-segmentation
           runtime: python37
           project_id: ${{ secrets.gcp_project_id }}
-          credentials_json: ${{ secrets.gcp_credentials }}
+          credentials: ${{ secrets.gcp_credentials }}
           entry_point: run_inference
           env_vars: INPUT_BUCKET_NAME=cloud-segmentation-input,OUTPUT_BUCKET_NAME=cloud-segmentation-output
           memory_mb: 2048MB
