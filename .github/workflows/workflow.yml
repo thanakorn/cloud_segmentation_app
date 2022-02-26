@@ -1,0 +1,22 @@
+name: Merge
+
+# Controls when the workflow will run
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy_function:
+    steps:
+      - name: "Deploy a Cloud Function"
+        id: deploy-function
+        uses: google-github-actions/deploy-cloud-functions@v0.1.0
+        with:
+          name: cloud-segmentation
+          runtime: python37
+          entry_point: run_inference
+          project_id: ${{ secrets.gcp_project }}
+          credentials: ${{ secrets.gcp_credentials }}
+          env_vars: INPUT_BUCKET_NAME=cloud-segmentation-input,OUTPUT_BUCKET_NAME=cloud-segmentation-output
+          memory_mb: 2048MB
