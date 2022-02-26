@@ -12,14 +12,19 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
+      - name: "Authenticate GCP"
+        id: auth
+        uses: google-github-actions/auth@v0
+        with:
+          credentials_json: ${{ secrets.gcp_credentials }}
+
       - name: "Deploy a Cloud Function"
         id: deploy-function
-        uses: google-github-actions/deploy-cloud-functions@v0.1.0
+        uses: google-github-actions/deploy-cloud-functions@v0
         with:
           name: cloud-segmentation
           runtime: python37
-          project_id: ${{ secrets.gcp_project_id }}
-          credentials: ${{ secrets.gcp_credentials }}
           entry_point: run_inference
           env_vars: INPUT_BUCKET_NAME=cloud-segmentation-input,OUTPUT_BUCKET_NAME=cloud-segmentation-output
           memory_mb: 2048MB
+          deploy_timeout: 600
